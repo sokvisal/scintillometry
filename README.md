@@ -17,4 +17,4 @@ This will create a folder at ./processedData/gate0_numblock_4_meff_16_offsetn_0_
 
 The name of the folder it's create is usually
 
-gate0__numblock__(n)__meff__(mx2)__offsetn__(offsetn)__offsetm__(offsetm)
+gate0\_numblock\_(n)\_meff\_(mx2)\_offsetn\_(offsetn)\_offsetm\_(offsetm)
