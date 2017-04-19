@@ -6,7 +6,8 @@ To extract your binned data, use extract_realData2.py
 
 The format is
 
-$ python extract_realData2.py binnedDataFile numofrows numofcolms offsetn offsetm n m \\
+$ python extract_realData2.py binnedDataFile numofrows numofcolms offsetn offsetm n m
+
 where n is the number of blocks (or the number of frequency bins) and m is the size of each block (or the number of time bins). numofrows 
 and numofcolms are the total number of frequency and time bins of your dynamic spectrum.
 
