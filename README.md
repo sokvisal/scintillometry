@@ -1,6 +1,6 @@
 # toeplitz_decomposition
 
-###Extracting Data from your binned file
+### Extracting Data from your binned file ###
 
 To extract your binned data, use extract_realData2.py
 
@@ -19,3 +19,11 @@ This will create a folder at ./processedData/gate0_numblock_4_meff_16_offsetn_0_
 The name of the folder it's create is usually
 
 gate0\_numblock\_(n)\_meff\_(mx2)\_offsetn\_(offsetn)\_offsetm\_(offsetm)
+
+### Plotting results ###
+
+The factorized toeplitz matrix is located in the ./results directory under a npy file with the \_uc.npy at the end. 
+
+The format is 
+
+$ python plot_simulated.py bnumofrows numofcolms offsetn offsetm
