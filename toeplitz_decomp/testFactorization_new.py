@@ -3,7 +3,7 @@ import numpy as np
 import os,sys
 from scipy.linalg import cholesky
 import matplotlib
-#matplotlib.use('Agg')
+matplotlib.use('Agg')
 import matplotlib.pylab as plt
 import matplotlib.cm as cmaps
 
@@ -22,11 +22,12 @@ pad = 1
 filename = "gate0_numblock_{}_meff_{}_offsetn_{}_offsetm_{}".format(n,m*2, offsetn, offsetm) 
 file = filename + ".dat"
 folder = "processedData"
+print(folder,filename)
 
 
 ##Load the toepletz file generated from extract_real
 toeplitz1 = np.memmap("{0}/{1}".format(folder,file), dtype='complex', mode='r', shape=(2*m,2*n*m), order='F')
-print toeplitz1.shape
+print (toeplitz1.shape)
 
 ##Creating a square toeplitz matrix
 toeplitz = np.zeros((2*m*n*(1 + pad), 2*n*m*(1 + pad)), complex)
@@ -35,17 +36,14 @@ toeplitz = np.zeros((2*m*n*(1 + pad), 2*n*m*(1 + pad)), complex)
 toeplitz[:2*m, :2*n*m] = toeplitz1
 
 for i in range(0,n*(1 + pad)):
-    print i
     T_temp = toeplitz[:2*m,2*i*m:2*(i+1)*m]
-    print T_temp
     for j in range(0,n*(1 + pad) - i):
         k = j + i
         toeplitz[2*j*m:2*(j+1)*m,2*k*m:2*(k+1)*m] = T_temp
         toeplitz[2*k*m:2*(k+1)*m, 2*j*m:2*(j+1)*m] = np.conj(T_temp.T)
 
-print toeplitz.shape
 
-print 'begin plot'
+print ('begin plot')
 ##Plotting thr raw toeplitz matrix
 fig = plt.figure(figsize=(12,6))
 #plt.subplot(1,3,1)
@@ -77,14 +75,12 @@ for i in range(n*(1 + pad)):
         
         if os.path.isfile(path):
             Ltemp = np.load(path)
-            if j == 0 and i == 0:
-                print Ltemp.shape
             L[2*m*j: 2*m*(j + 1), 2*m*i:2*m*(i + 1)] = Ltemp
 #            
 ##The  factorized matrix using Numpy's Cholesky
 #npL = cholesky(toeplitz, True)
 
-print 'begin plot 2'
+print ('begin plot 2')
 plt.subplot(1,2,2)
 
 ##Graphical lines
@@ -125,7 +121,7 @@ plt.imshow(np.abs(L))
 #ax.tick_params(axis='y', colors='white')
 cbar = plt.colorbar()
 #cbar.ax.tick_params(axis='y', colors='white')
-#plt.savefig('padd_toeplitz_err.png', transparent=True, bbox_inches='tight')
+plt.savefig('padd_toeplitz_err.png', transparent=False, bbox_inches='tight', dpi=400)
 #plt.close
 plt.show()
 

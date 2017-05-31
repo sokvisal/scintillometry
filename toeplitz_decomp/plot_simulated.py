@@ -35,7 +35,7 @@ else:
 extent = [-n/2, n/2, -m/2, m/2]
 
 
-retrieved = (reconstruct(21, 42, 0, 0))
+retrieved = (reconstruct(n, m*2, offsetn, offsetm))
 
 plt.figure(figsize=(18,12))
 plt.subplot(2,3,1)
