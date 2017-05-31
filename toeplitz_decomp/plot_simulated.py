@@ -132,4 +132,4 @@ ax.set_yticklabels(ytickslabels)
 cbar = plt.colorbar()
 #cbar.ax.tick_params(axis='y', colors='white')
 
-#plt.savefig('retreieved_offset_freq_domain.png', transparent=True, bbox_inches='tight')
+plt.savefig('retreieved_offset_freq_domain.png', transparent=False, bbox_inches='tight')

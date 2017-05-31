@@ -9,7 +9,7 @@ from scipy.fftpack import fftshift, fft2, ifft2, ifftshift
 def reconstruct(n, meff, noffset, moffset):
     #m = meff/2.
     
-    filename = 'gate0_numblock_{0}_meff_{1}_offsetn_{2}_offsetm_{3}_uc.npy'.format(n, meff, noffset, moffset)
+    filename = 'results/gate0_numblock_{0}_meff_{1}_offsetn_{2}_offsetm_{3}_uc.npy'.format(n, meff, noffset, moffset)
     data = np.load(filename)
     
     #doppler = (np.arange(m)-m/2)*1./(6729.*m/660.)*1e3
@@ -19,9 +19,15 @@ def reconstruct(n, meff, noffset, moffset):
     for i in range(len(data)/meff):
         e[i,:] = data[i*meff:(i+1)*meff,0]
         
-    e = np.concatenate((e[n*(2/4.):n,meff*(3/4.):meff], e[n*(2/4.):n, 0:meff/4.]), axis=1)
+    e = np.concatenate((e[int(n*2/4.):n,int(meff*3/4.+0.5):meff], e[int(n*2/4.):n, 0:int(meff/4.+0.5)]), axis=1)
+    print (int(n*2/4.), n,int(meff*3/4.), meff)
+    print (int(n*2/4.),n, 0,int(meff/4.))
     e = np.flipud(e)
-    e = np.concatenate((np.zeros([e.shape[0], e.shape[1]]), e), axis=0)
+    if n%2 != 0:
+        e = np.concatenate((np.zeros([e.shape[0]-1, e.shape[1]]), e), axis=0)
+    else:
+        e = np.concatenate((np.zeros([e.shape[0], e.shape[1]]), e), axis=0)
+    print (e.shape)
     
     #y = delay[len(delay)/2:3*len(delay)/4]
     #x = doppler[:-1]

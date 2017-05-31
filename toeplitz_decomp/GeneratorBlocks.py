@@ -23,8 +23,7 @@ class Blocks:
 	def numOfWork1(self):
 		counter = 0
 		for b in self:
- 			if b.getWork1() != None:
-				counter += 1
+ 			if b.getWork1() != None: counter += 1
 		return counter
 	def __iter__(self):
 		self.currPos=len(self.blocks)

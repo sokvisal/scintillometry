@@ -5,7 +5,6 @@ import scipy as sp
 from numpy.linalg import cholesky, inv
 from numpy import triu
 import os,sys,inspect
-import sets
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 sys.path.insert(0, currentdir + "/Exceptions")
 
@@ -49,7 +48,7 @@ class ToeplitzFactorizor:
                     file_count = len(files)
                     if file_count == 2*self.numOfBlocks:
                         kCheckpoint = k 
-                        if self.rank == 0: print "Using Checkpoint #{0}".format(k)
+                        if self.rank == 0: print ("Using Checkpoint #{0}".format(k))
                         break
         else:
             if self.rank == 0:
@@ -119,7 +118,7 @@ class ToeplitzFactorizor:
         for k in range(self.kCheckpoint + 1,n*(1 + pad)):
             self.k = k
             if self.rank == 1:
-                print "Loop {0}".format(k)
+                print ("Loop {0}".format(k))
             ##Build generator at step k [A1(:e1, :) A2(s2:e2, :)]
             s1, e1, s2, e2 = self.__set_curr_gen(k, n)
             if method==SEQ:
@@ -142,7 +141,7 @@ class ToeplitzFactorizor:
                 
                 elapsedTime = time() - startTime
                 if elapsedTime + max(timePerLoop) >= MAXTIME: ##Max instead of np.mean, just to be safe
-                    print "Saving Checkpoint #{0}".format(k)  
+                    print ("Saving Checkpoint #{0}".format(k))
                     if not os.path.exists("processedData/{0}/checkpoint/{1}/".format(folder, k)):
                         try:
                             os.makedirs("processedData/{0}/checkpoint/{1}/".format(folder, k))
@@ -272,21 +271,19 @@ class ToeplitzFactorizor:
             for j in range(0, p_eff):
                 j1 = sb1 + j
                 j2 = sb2 + j
-                #X2, beta= self.__house_vec(j1, s2, j, b) ##s2 or sb2?
                 data= self.__house_vec(j1, s2, j, b) ##s2 or sb2?
-                #XX2[j] = X2  
+  
                 temp[j] = data
                 X2 = data[:self.m]
                 beta = data[-1]
                 self.__seq_update(X2, beta, eb1, eb2, s2, j1, m, n)
-#            print eb1
+
             XX2 = temp[:,:m]
             if b.rank == s2 or b.rank == 0:
                 S = self.__aggregate(S, XX2, beta, m, j, p_eff, method)
                 self.__set_curr_gen(s2, n) ## Updates work
                 self.__new_block_update(XX2, sb1, eb1, u1, e1, s2,  sb2, eb2, u2, e2, S, m, p_eff)
             X2_list[sb1:sb1+p_eff,:] = temp
-#            if b.rank == s2: print beta
         
         b.createTemp(np.zeros((m, m+1), complex))
         b.setTemp(X2_list)
@@ -319,9 +316,6 @@ class ToeplitzFactorizor:
                 S = self.__aggregate(S, XX2, beta, m, j, p_eff, method)
                 self.__set_curr_gen(s2, n) ## Updates work
                 self.__block_update(XX2, sb1, eb1, u1, e1, s2,  sb2, eb2, u2, e2, S, method)
-#                print beta
-
-            #raise Exception()
         return
     
     def __new_block_update(self, X2, sb1, eb1, u1, e1,s2, sb2, eb2, u2, e2, S, m, p_eff):
@@ -561,7 +555,7 @@ class ToeplitzFactorizor:
         #isZero = self.comm.bcast(isZero, root=s2%self.size)
 #        self.comm.Bcast(b.getCond(), root=s2%self.size)
         if b.getCond()[0]:
-            print isZero
+            print (isZero)
             data[:self.m] = X2
             data[-1] = beta  
             b.setTemp(data)
@@ -603,63 +597,7 @@ class ToeplitzFactorizor:
 #            X2 = data[:self.m]
 #            beta = data[-1]
             del A1
-        
-#        if blocks.hasRank(s2):
-#            z = self.comm.recv(source=0, tag=3*num + s2)
-#            beta = self.comm.recv(source=0, tag=4*num + s2)
-#            
-#            A2 = blocks.getBlock(s2).getA2()
-#            X2 = A2[j,:]/z
-#            A2[j, :] = X2
-# 
-#           #print X2.shape, beta, 'main'
-#            data[:self.m] = X2
-#            data[-1] = beta  
-#            b.setTemp(data)
-#            del A2
 
-
-#        self.comm.Barrier()
-#        for b in self.blocks:
-#            if b.work1 == None: continue
-#            print s2,b.rank, b.work1, b.work2
-#            print 1/0.
-#                self.comm.send(data, dest=b.rank, tag=b.work1*num + s2)
-#                self.comm.recv(source = b.work1, tag=b.work1*num + s2)
-#            if b.work2 == s2:
-#                data = self.comm.recv(source=s2%self.size, tag=5*num + s2)
-#                X2 = data[:self.m]
-#                beta = data[-1]
-#            if b.work1 == s2:
-#                data = self.comm.recv(source=s2%self.size, tag=5*num + s2)
-#                X2 = data[:self.m]
-#                beta = data[-1]
-        
-#        self.comm.Bcast(b.getTemp(), root=s2%self.size)
-#        data = b.getTemp()
-#        X2 = data[:self.m]
-#        beta = data[-1]
-                
-#        if blocks.hasRank(s2): 
-#            # process zero exposes an array of 10 integers 
-#            disp_unit = data.itemsize 
-#        else: 
-#            # other process do not expose memory 
-#            data = None 
-#            disp_unit = 1 
-#        
-#        win = MPI.Win.Create(data, disp_unit, comm=self.comm) 
-#
-#        # all processes get three integers from process zero 
-#        data = np.zeros((self.m+1), complex) 
-#        win.Fence() 
-#        win.Rget(data, s2) 
-#        win.Fence() 
-#        X2 = data[:self.m]
-#        beta = data[-1]
-#
-#        win.Free()
-#        
         return data#X2, beta
 
 	

@@ -1,7 +1,7 @@
 import os,sys
 from mpi4py import MPI
 import numpy as np
-from old_factorize_parrallel import ToeplitzFactorizor
+from new_factorize_parrallel import ToeplitzFactorizor
 from time import time
 
 comm = MPI.COMM_WORLD
@@ -12,7 +12,7 @@ FILE = "gb057_1.input_baseline258_freq_03_pol_all.rebint.1.rebined"
 
 if len(sys.argv) != 8 and len(sys.argv) != 9:
 	if rank==0:
-		print "Please pass in the following arguments: method offsetn offsetm n m p pad"
+		print ("Please pass in the following arguments: method offsetn offsetm n m p pad")
 else:
     offsetn=int(sys.argv[2])
     offsetm=int(sys.argv[3])
